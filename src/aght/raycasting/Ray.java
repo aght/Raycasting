@@ -25,15 +25,15 @@ public class Ray {
      * found or the denominator is 0, null will be returned.
      */
     public Vector2f cast(Wall wall) {
-        float x1 = wall.getStartX();
-        float y1 = wall.getStartY();
-        float x2 = wall.getEndX();
-        float y2 = wall.getEndY();
+        final float x1 = wall.getStartX();
+        final float y1 = wall.getStartY();
+        final float x2 = wall.getEndX();
+        final float y2 = wall.getEndY();
 
-        float x3 = this.position.x();
-        float y3 = this.position.y();
-        float x4 = this.position.x() + this.direction.x();
-        float y4 = this.position.y() + this.direction.y();
+        final float x3 = this.position.x();
+        final float y3 = this.position.y();
+        final float x4 = this.position.x() + this.direction.x();
+        final float y4 = this.position.y() + this.direction.y();
 
         final float denominator = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
 
