@@ -39,6 +39,8 @@ public abstract class Shape {
         rotation = 0;
 
         updateTransform = true;
+
+        fillColor = new Color(255, 255, 255);
     }
 
     protected Shape(List<Vector2f> vertices) {
@@ -261,5 +263,5 @@ public abstract class Shape {
 
     // #################################################################
 
-    abstract void render();
+    public abstract void render();
 }
