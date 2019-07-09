@@ -1,6 +1,9 @@
 package aght.window;
 
 import aght.window.input.keyboard.Keyboard;
+import aght.window.input.mouse.MouseButton;
+import aght.window.input.mouse.MousePosition;
+import aght.window.input.mouse.MouseScroll;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.system.MemoryStack;
 
@@ -62,6 +65,9 @@ public abstract class Context {
         window = glfwCreateWindow(width, height, title, NULL, NULL);
 
         glfwSetKeyCallback(window, new Keyboard());
+        glfwSetCursorPosCallback(window, new MousePosition());
+        glfwSetMouseButtonCallback(window, new MouseButton());
+        glfwSetScrollCallback(window, new MouseScroll());
 
         if (window == NULL) {
             glfwTerminate();

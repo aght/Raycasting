@@ -18,4 +18,12 @@ public class MousePosition extends GLFWCursorPosCallback {
     public static Vector2f getCursorPosition() {
         return position;
     }
+
+    public static float getCursorX() {
+        return position.x();
+    }
+
+    public static float getCursorY() {
+        return position.y();
+    }
 }

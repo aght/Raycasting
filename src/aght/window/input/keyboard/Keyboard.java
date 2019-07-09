@@ -20,7 +20,7 @@ public class Keyboard extends GLFWKeyCallback {
         }
     }
 
-    public static boolean isKeyPressed(int key) {
+    public static boolean isKeyDown(int key) {
         return pressedKeys[key];
     }
 }
