@@ -33,14 +33,14 @@ public abstract class Shape {
         fillColor = new Color(255, 255, 255);
         strokeWidth = 0;
 
+        transform = new Matrix3f();
+
         position = new Vector2f(0, 0);
         origin = new Vector2f(0, 0);
         scale = new Vector2f(1, 1);
         rotation = 0;
 
         updateTransform = true;
-
-        fillColor = new Color(255, 255, 255);
     }
 
     protected Shape(List<Vector2f> vertices) {
@@ -191,12 +191,16 @@ public abstract class Shape {
             float tx = -origin.x() * sx - origin.y() * kx + position.x();
             float ty = origin.x() * ky - origin.y() * sy + position.y();
 
-            transform = new Matrix3f(sx, kx, tx, -ky, sy, ty, 0, 0, 1);
+            transform.set(sx, kx, tx, -ky, sy, ty, 0, 0, 1);
 
             updateTransform = false;
         }
 
         return transform;
+    }
+
+    protected boolean shouldUpdateTransform() {
+        return updateTransform;
     }
 
     // #################################################################
@@ -222,6 +226,10 @@ public abstract class Shape {
     }
 
     public void setStrokeWidth(float strokeWidth) {
+        if (strokeWidth < 0) {
+            this.strokeWidth = 0;
+        }
+
         this.strokeWidth = strokeWidth;
     }
 

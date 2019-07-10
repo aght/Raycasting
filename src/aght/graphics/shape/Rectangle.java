@@ -28,16 +28,18 @@ public class Rectangle extends Shape {
         nvgSave(ctx);
         nvgBeginPath(ctx);
 
-        Matrix3f transform = getTransform();
+        if (shouldUpdateTransform()) {
+            Matrix3f transform = getTransform();
 
-        float a = transform.m00();
-        float b = transform.m10();
-        float c = transform.m01();
-        float d = transform.m11();
-        float e = transform.m02();
-        float f = transform.m12();
+            float a = transform.m00();
+            float b = transform.m10();
+            float c = transform.m01();
+            float d = transform.m11();
+            float e = transform.m02();
+            float f = transform.m12();
 
-        nvgTransform(ctx, a, b, c, d, e, f);
+            nvgTransform(ctx, a, b, c, d, e, f);
+        }
 
         nvgRect(ctx, getPosition().x(), getPosition().y(), w, h);
 

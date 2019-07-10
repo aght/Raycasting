@@ -58,7 +58,9 @@ public class Camera {
                 .mul(step));
     }
 
-    public void renderView(List<Wall> walls) {
+    public void renderView(List<Wall> walls, int width, int height) {
+        List<Float> records = new ArrayList<>();
+
         for (Ray ray : rays) {
             Vector2f closest = null;
 
@@ -90,6 +92,8 @@ public class Camera {
 
                 nvgRestore(ctx);
             }
+
+            records.add(minDistance);
         }
     }
 

@@ -76,7 +76,7 @@ public class Main extends Context {
             wall.render();
         }
 
-        camera.renderView(walls);
+        camera.renderView(walls, width, height);
         camera.renderBody();
     }
 

@@ -27,24 +27,28 @@ public class Line extends Shape {
     public void render() {
         nvgSave(ctx);
 
-        Matrix3f transform = getTransform();
+        if (shouldUpdateTransform()) {
+            Matrix3f transform = getTransform();
 
-        float a = transform.m00();
-        float b = transform.m10();
-        float c = transform.m01();
-        float d = transform.m11();
-        float e = transform.m02();
-        float f = transform.m12();
+            float a = transform.m00();
+            float b = transform.m10();
+            float c = transform.m01();
+            float d = transform.m11();
+            float e = transform.m02();
+            float f = transform.m12();
 
-        nvgTransform(ctx, a, b, c, d, e, f);
+            nvgTransform(ctx, a, b, c, d, e, f);
+        }
 
         nvgBeginPath(ctx);
         nvgMoveTo(ctx, getPositionX(), getPositionY());
         nvgLineTo(ctx, end.x(), end.y());
 
-        nvgStrokeColor(ctx, getStrokeColor().nvgColor());
-        nvgStrokeWidth(ctx, getStrokeWidth());
-        nvgStroke(ctx);
+        if (getStrokeColor().a() != 0 && getStrokeWidth() != 0) {
+            nvgStrokeColor(ctx, getStrokeColor().nvgColor());
+            nvgStrokeWidth(ctx, getStrokeWidth());
+            nvgStroke(ctx);
+        }
 
         nvgRestore(ctx);
     }
