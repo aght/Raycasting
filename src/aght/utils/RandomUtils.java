@@ -15,7 +15,7 @@ public class RandomUtils {
      * @param max upper bound
      * @return random number between min and max (inclusive)
      */
-    public int intInRange(int min, int max) {
+    public static int intInRange(int min, int max) {
         return ThreadLocalRandom.current().nextInt(min, max + 1);
     }
 }

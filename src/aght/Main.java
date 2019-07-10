@@ -2,6 +2,7 @@ package aght;
 
 import aght.raycasting.Camera;
 import aght.raycasting.Wall;
+import aght.utils.RandomUtils;
 import aght.window.Context;
 import aght.window.input.keyboard.Keyboard;
 
@@ -33,7 +34,10 @@ public class Main extends Context {
         List<Wall> walls = new ArrayList<>();
 
         for (int i = 0; i < 20; i++) {
-
+            float x1 = RandomUtils.intInRange(0, width);
+            float y1 = RandomUtils.intInRange(0, height);
+            float x2 = RandomUtils.intInRange(0, width);
+            float y2 = RandomUtils.intInRange(0, height);
         }
 
         return walls;
