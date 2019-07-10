@@ -16,10 +16,10 @@ public class Mouse {
     }
 
     public static float getScrollX() {
-        return Mouse.getScrollX();
+        return MouseScroll.getScrollX();
     }
 
     public static float getScrollY() {
-        return Mouse.getScrollY();
+        return MouseScroll.getScrollY();
     }
 }

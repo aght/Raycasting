@@ -26,7 +26,6 @@ public class Line extends Shape {
     @Override
     public void render() {
         nvgSave(ctx);
-        nvgBeginPath(ctx);
 
         Matrix3f transform = getTransform();
 
@@ -39,6 +38,7 @@ public class Line extends Shape {
 
         nvgTransform(ctx, a, b, c, d, e, f);
 
+        nvgBeginPath(ctx);
         nvgMoveTo(ctx, getPositionX(), getPositionY());
         nvgLineTo(ctx, end.x(), end.y());
 

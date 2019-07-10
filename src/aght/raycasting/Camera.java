@@ -73,10 +73,13 @@ public class Camera {
                         minDistance = distance;
                     }
                 }
-
             }
 
             if (closest != null) {
+
+                // Line class causes a lot of stutters
+                // For some reason this is faster than using the Line class
+                // Possible that the creation of the affine matrix is too slow
                 nvgSave(ctx);
                 nvgBeginPath(ctx);
                 nvgMoveTo(ctx, this.position.x(), this.position.y());
