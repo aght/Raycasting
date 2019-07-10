@@ -23,7 +23,7 @@ public class Main extends Context {
     private List<Wall> walls;
 
     public Main() {
-        super(1000, 600, "Raycasting", 8);
+        super(400, 400, "Raycasting", 2);
         width = getWidth();
         height = getHeight();
     }
@@ -31,7 +31,7 @@ public class Main extends Context {
     private List<Wall> generateWalls() {
         List<Wall> walls = new ArrayList<>();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 5; i++) {
             float x1 = RandomUtils.intInRange(0, width);
             float y1 = RandomUtils.intInRange(0, height);
             float x2 = RandomUtils.intInRange(0, width);
@@ -62,11 +62,11 @@ public class Main extends Context {
         }
 
         if (Keyboard.isKeyDown(GLFW_KEY_UP)) {
-            camera.move(2);
+            camera.move(1f);
         }
 
         if (Keyboard.isKeyDown(GLFW_KEY_DOWN)) {
-            camera.move(-2);
+            camera.move(-1f);
         }
     }
 

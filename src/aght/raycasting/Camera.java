@@ -2,7 +2,9 @@ package aght.raycasting;
 
 import aght.graphics.Color;
 import aght.graphics.shape.Rectangle;
+import aght.utils.MathUtils;
 import org.joml.Vector2f;
+import org.lwjgl.system.MathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,41 +61,58 @@ public class Camera {
     }
 
     public void renderView(List<Wall> walls, int width, int height) {
-        List<Float> records = new ArrayList<>();
+        List<Float> distances = new ArrayList<>();
+        List<Color> colors = new ArrayList<>();
 
         for (Ray ray : rays) {
             Vector2f closest = null;
+            Color color = new Color(255, 0, 0, 100);
 
             float minDistance = Float.MAX_VALUE;
 
-            for (Wall wall : walls) {
-                Vector2f intersection = ray.cast(wall);
+            int bestIndex = 0;
+
+            for (int i = 0; i < walls.size(); i++) {
+                Vector2f intersection = ray.cast(walls.get(i));
                 if (intersection != null) {
-                    float distance = this.position.distanceSquared(intersection);
+                    float distance = this.position.distance(intersection);
                     if (distance < minDistance) {
                         closest = intersection;
                         minDistance = distance;
+                        bestIndex = i;
                     }
                 }
             }
 
             if (closest != null) {
-
-                // Line class causes a lot of stutters
-                // For some reason this is faster than using the Line class
-                // Possible that the creation of the affine matrix is too slow
                 nvgSave(ctx);
                 nvgBeginPath(ctx);
                 nvgMoveTo(ctx, this.position.x(), this.position.y());
                 nvgLineTo(ctx, closest.x(), closest.y());
 
-                nvgStrokeColor(ctx, new Color(255, 0, 0).nvgColor());
+                nvgStrokeColor(ctx, new Color(0, 255, 0).nvgColor());
                 nvgStroke(ctx);
 
                 nvgRestore(ctx);
             }
 
-            records.add(minDistance);
+            color.b((int) MathUtils.map(bestIndex, 0, walls.size(), 0, 255));
+            color.g((int) MathUtils.map(bestIndex, 0, walls.size(), 0, 120));
+
+            distances.add(minDistance);
+            colors.add(color);
+        }
+
+        int numSections = width / distances.size();
+
+        for (int i = 0; i < distances.size(); i++) {
+            if (distances.get(i) < height) {
+                float h = MathUtils.map(distances.get(i), 0, width / 2, height, 0);
+                Rectangle section = new Rectangle(ctx, numSections * i, height / 2, numSections, h);
+                section.setOrigin(section.getX() + section.getWidth() / 2, section.getY() + section.getHeight() / 2);
+                section.setFillColor(colors.get(i));
+                section.render();
+            }
         }
     }
 
