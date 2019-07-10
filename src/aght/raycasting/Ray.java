@@ -57,4 +57,8 @@ public class Ray {
         this.direction.set(x, y);
         this.direction.normalize();
     }
+
+    public float getAngle() {
+        return (float) Math.atan2(this.direction.y, this.direction.x);
+    }
 }

@@ -61,16 +61,11 @@ public class Camera {
     }
 
     public void renderView(List<Wall> walls, int width, int height) {
-        List<Float> distances = new ArrayList<>();
-        List<Color> colors = new ArrayList<>();
-
+        int j = 0;
         for (Ray ray : rays) {
             Vector2f closest = null;
-            Color color = new Color(255, 0, 0, 100);
 
             float minDistance = Float.MAX_VALUE;
-
-            int bestIndex = 0;
 
             for (int i = 0; i < walls.size(); i++) {
                 Vector2f intersection = ray.cast(walls.get(i));
@@ -79,40 +74,36 @@ public class Camera {
                     if (distance < minDistance) {
                         closest = intersection;
                         minDistance = distance;
-                        bestIndex = i;
                     }
                 }
             }
 
-            if (closest != null) {
-                nvgSave(ctx);
-                nvgBeginPath(ctx);
-                nvgMoveTo(ctx, this.position.x(), this.position.y());
-                nvgLineTo(ctx, closest.x(), closest.y());
+//            if (closest != null) {
+//                nvgSave(ctx);
+//                nvgBeginPath(ctx);
+//                nvgMoveTo(ctx, this.position.x(), this.position.y());
+//                nvgLineTo(ctx, closest.x(), closest.y());
+//
+//                nvgStrokeColor(ctx, new Color(0, 255, 0).nvgColor());
+//                nvgStroke(ctx);
+//
+//                nvgRestore(ctx);
+//            }
 
-                nvgStrokeColor(ctx, new Color(0, 255, 0).nvgColor());
-                nvgStroke(ctx);
+            float correctedDistance = minDistance * (float) Math.cos(ray.getAngle() - heading);
+            float projectionPlane = (width / 2) / (float) Math.tan(toRadians(fov) / 2);
+            float stripWidth = width / rays.size();
+            float stripHeight = (32 / correctedDistance) * projectionPlane;
 
-                nvgRestore(ctx);
-            }
+            float alpha = 100 / correctedDistance;
+            int mappedAlpha = (int) MathUtils.map(alpha, 0, 1, 0, 255);
 
-            color.b((int) MathUtils.map(bestIndex, 0, walls.size(), 0, 255));
-            color.g((int) MathUtils.map(bestIndex, 0, walls.size(), 0, 120));
+            Rectangle section = new Rectangle(ctx, j * stripWidth, height / 2, stripWidth, stripHeight);
+            section.setOrigin(section.getX() + section.getWidth() / 2, section.getY() + section.getHeight() / 2);
+            section.setFillColor(new Color(255, 255, 255, mappedAlpha));
+            section.render();
 
-            distances.add(minDistance);
-            colors.add(color);
-        }
-
-        int numSections = width / distances.size();
-
-        for (int i = 0; i < distances.size(); i++) {
-            if (distances.get(i) < height) {
-                float h = MathUtils.map(distances.get(i), 0, width / 2, height, 0);
-                Rectangle section = new Rectangle(ctx, numSections * i, height / 2, numSections, h);
-                section.setOrigin(section.getX() + section.getWidth() / 2, section.getY() + section.getHeight() / 2);
-                section.setFillColor(colors.get(i));
-                section.render();
-            }
+            j++;
         }
     }
 

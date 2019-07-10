@@ -31,7 +31,12 @@ public class Main extends Context {
     private List<Wall> generateWalls() {
         List<Wall> walls = new ArrayList<>();
 
-        for (int i = 0; i < 5; i++) {
+        walls.add(new Wall(ctx, 0, 0, width, 0));
+        walls.add(new Wall(ctx, 0, 0, 0, height));
+        walls.add(new Wall(ctx, 0, height, width, height));
+        walls.add(new Wall(ctx, width, height, width, 0));
+
+        for (int i = 0; i < 10; i++) {
             float x1 = RandomUtils.intInRange(0, width);
             float y1 = RandomUtils.intInRange(0, height);
             float x2 = RandomUtils.intInRange(0, width);
@@ -40,6 +45,7 @@ public class Main extends Context {
             walls.add(new Wall(ctx, x1, y1, x2, y2));
         }
 
+
         return walls;
     }
 
@@ -47,7 +53,7 @@ public class Main extends Context {
     public void setup() {
         ctx = getNvgctx();
 
-        camera = new Camera(ctx, width / 2, height / 2, 90);
+        camera = new Camera(ctx, width / 2, height / 2, 60);
         walls = generateWalls();
     }
 
@@ -72,12 +78,12 @@ public class Main extends Context {
 
     @Override
     public void render() {
-        for (Wall wall : walls) {
-            wall.render();
-        }
+//        for (Wall wall : walls) {
+//            wall.render();
+//        }
 
         camera.renderView(walls, width, height);
-        camera.renderBody();
+//        camera.renderBody();
     }
 
     public static void main(String[] args) {
