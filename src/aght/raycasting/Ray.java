@@ -1,6 +1,5 @@
 package aght.raycasting;
 
-import aght.graphics.Color;
 import org.joml.Vector2f;
 
 public class Ray {
@@ -50,11 +49,6 @@ public class Ray {
 
     public void setAngle(float angle) {
         this.direction.set((float) Math.cos(angle), (float) Math.sin(angle));
-        this.direction.normalize();
-    }
-
-    public void pointAt(float x, float y) {
-        this.direction.set(x, y);
         this.direction.normalize();
     }
 

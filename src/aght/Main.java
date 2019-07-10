@@ -1,5 +1,6 @@
 package aght;
 
+import aght.graphics.Color;
 import aght.raycasting.Camera;
 import aght.raycasting.Wall;
 import aght.utils.RandomUtils;
@@ -23,7 +24,7 @@ public class Main extends Context {
     private List<Wall> walls;
 
     public Main() {
-        super(400, 400, "Raycasting", 2);
+        super(1000, 768, "Raycasting", 2);
         width = getWidth();
         height = getHeight();
     }
@@ -31,20 +32,20 @@ public class Main extends Context {
     private List<Wall> generateWalls() {
         List<Wall> walls = new ArrayList<>();
 
-        walls.add(new Wall(ctx, 0, 0, width, 0));
-        walls.add(new Wall(ctx, 0, 0, 0, height));
-        walls.add(new Wall(ctx, 0, height, width, height));
-        walls.add(new Wall(ctx, width, height, width, 0));
+        walls.add(new Wall(ctx, 0, 0, width, 0, Color.White));
+        walls.add(new Wall(ctx, 0, 0, 0, height, Color.White));
+        walls.add(new Wall(ctx, 0, height, width, height, Color.White));
+        walls.add(new Wall(ctx, width, height, width, 0, Color.White));
 
-        for (int i = 0; i < 10; i++) {
-            float x1 = RandomUtils.intInRange(0, width);
-            float y1 = RandomUtils.intInRange(0, height);
-            float x2 = RandomUtils.intInRange(0, width);
-            float y2 = RandomUtils.intInRange(0, height);
+        float x = 60;
+        float y = 60;
+        float w = 100;
+        float h = 100;
 
-            walls.add(new Wall(ctx, x1, y1, x2, y2));
-        }
-
+        walls.add(new Wall(ctx, x, y, x + w, y, Color.Red));
+        walls.add(new Wall(ctx, x + w, y, x + w, y + h, Color.Aqua));
+        walls.add(new Wall(ctx, x + w, y + h, x, y + h, Color.Fuchsia));
+        walls.add(new Wall(ctx, x, y + h, x, y, Color.Lime));
 
         return walls;
     }
@@ -68,22 +69,17 @@ public class Main extends Context {
         }
 
         if (Keyboard.isKeyDown(GLFW_KEY_UP)) {
-            camera.move(1f);
+            camera.move(2f);
         }
 
         if (Keyboard.isKeyDown(GLFW_KEY_DOWN)) {
-            camera.move(-1f);
+            camera.move(-2f);
         }
     }
 
     @Override
     public void render() {
-//        for (Wall wall : walls) {
-//            wall.render();
-//        }
-
         camera.renderView(walls, width, height);
-//        camera.renderBody();
     }
 
     public static void main(String[] args) {

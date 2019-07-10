@@ -11,7 +11,10 @@ import java.util.List;
 
 import static org.lwjgl.nanovg.NanoVG.*;
 
+
 public class Camera {
+    private static final int RAY_COUNT = 200;
+
     private long ctx;
 
     private Vector2f position;
@@ -36,16 +39,22 @@ public class Camera {
     private List<Ray> generateRays() {
         List<Ray> rays = new ArrayList<>();
 
-        for (int angle = (int) -fov / 2; angle < fov / 2; angle++) {
-            rays.add(new Ray(position, toRadians(angle) + heading));
+        float rayAngle = this.heading - (toRadians(fov) / 2);
+
+        for (int i = 0; i < RAY_COUNT; i++) {
+            rays.add(new Ray(this.position, rayAngle));
+            rayAngle += toRadians(fov) / RAY_COUNT;
         }
 
         return rays;
     }
 
     private void updateRays() {
-        for (int i = 0, angle = (int) -fov / 2; angle < fov / 2; angle++, i++) {
-            rays.get(i).setAngle(toRadians(angle) + heading);
+        float rayAngle = this.heading - (toRadians(fov) / 2);
+
+        for (int i = 0; i < RAY_COUNT; i++) {
+            rays.get(i).setAngle(rayAngle);
+            rayAngle += toRadians(fov) / RAY_COUNT;
         }
     }
 
@@ -60,10 +69,10 @@ public class Camera {
                 .mul(step));
     }
 
-    public void renderView(List<Wall> walls, int width, int height) {
+    public void renderView(List<Wall> walls, float width, float height) {
         int j = 0;
         for (Ray ray : rays) {
-            Vector2f closest = null;
+            Wall wall = null;
 
             float minDistance = Float.MAX_VALUE;
 
@@ -71,48 +80,32 @@ public class Camera {
                 Vector2f intersection = ray.cast(walls.get(i));
                 if (intersection != null) {
                     float distance = this.position.distance(intersection);
+
                     if (distance < minDistance) {
-                        closest = intersection;
                         minDistance = distance;
+                        wall = walls.get(i);
                     }
                 }
             }
 
-//            if (closest != null) {
-//                nvgSave(ctx);
-//                nvgBeginPath(ctx);
-//                nvgMoveTo(ctx, this.position.x(), this.position.y());
-//                nvgLineTo(ctx, closest.x(), closest.y());
-//
-//                nvgStrokeColor(ctx, new Color(0, 255, 0).nvgColor());
-//                nvgStroke(ctx);
-//
-//                nvgRestore(ctx);
-//            }
-
             float correctedDistance = minDistance * (float) Math.cos(ray.getAngle() - heading);
             float projectionPlane = (width / 2) / (float) Math.tan(toRadians(fov) / 2);
-            float stripWidth = width / rays.size();
+            float stripWidth = width / RAY_COUNT;
             float stripHeight = (32 / correctedDistance) * projectionPlane;
 
-            float alpha = 100 / correctedDistance;
+            float alpha = 150 / correctedDistance;
             int mappedAlpha = (int) MathUtils.map(alpha, 0, 1, 0, 255);
+
+            Color wallColor = wall.getColor();
+            wallColor.a(mappedAlpha);
 
             Rectangle section = new Rectangle(ctx, j * stripWidth, height / 2, stripWidth, stripHeight);
             section.setOrigin(section.getX() + section.getWidth() / 2, section.getY() + section.getHeight() / 2);
-            section.setFillColor(new Color(255, 255, 255, mappedAlpha));
+            section.setFillColor(wallColor);
             section.render();
 
             j++;
         }
-    }
-
-    public void renderBody() {
-        body.setOrigin(body.getX() + body.getWidth() / 2, body.getY() + body.getHeight() / 2);
-        body.setX(position.x());
-        body.setY(position.y());
-        body.setRotation(heading);
-        body.render();
     }
 
     public float getRotation() {
