@@ -18,6 +18,7 @@ public class Line extends Shape {
         this.end = new Vector2f(x2, y2);
 
         setPosition(x1, y1);
+        setOrigin(x1, y1);
         setStrokeWidth(1);
         setStrokeColor(new Color(255, 255, 255));
     }

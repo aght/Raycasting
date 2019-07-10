@@ -6,10 +6,8 @@ import aght.utils.RandomUtils;
 import aght.window.Context;
 import aght.window.input.keyboard.Keyboard;
 
-import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -33,11 +31,13 @@ public class Main extends Context {
     private List<Wall> generateWalls() {
         List<Wall> walls = new ArrayList<>();
 
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 10; i++) {
             float x1 = RandomUtils.intInRange(0, width);
             float y1 = RandomUtils.intInRange(0, height);
             float x2 = RandomUtils.intInRange(0, width);
             float y2 = RandomUtils.intInRange(0, height);
+
+            walls.add(new Wall(ctx, x1, y1, x2, y2));
         }
 
         return walls;
@@ -48,7 +48,7 @@ public class Main extends Context {
         ctx = getNvgctx();
 
         camera = new Camera(ctx, width / 2, height / 2, 90);
-        walls = new ArrayList<Wall>();
+        walls = generateWalls();
     }
 
     @Override
@@ -62,21 +62,22 @@ public class Main extends Context {
         }
 
         if (Keyboard.isKeyDown(GLFW_KEY_UP)) {
-            camera.move(1);
+            camera.move(2);
         }
 
         if (Keyboard.isKeyDown(GLFW_KEY_DOWN)) {
-            camera.move(-1);
+            camera.move(-2);
         }
     }
 
     @Override
     public void render() {
-        camera.renderBody();
-
         for (Wall wall : walls) {
             wall.render();
         }
+
+        camera.renderView(walls);
+        camera.renderBody();
     }
 
     public static void main(String[] args) {

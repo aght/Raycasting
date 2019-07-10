@@ -1,16 +1,20 @@
 package aght.raycasting;
 
+import aght.graphics.Color;
 import aght.graphics.shape.Rectangle;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.lwjgl.nanovg.NanoVG.*;
+
 public class Camera {
     private long ctx;
 
-    private float fov;
     private Vector2f position;
+
+    private float fov;
     private float heading;
 
     private List<Ray> rays;
@@ -38,8 +42,7 @@ public class Camera {
     }
 
     private void updateRays() {
-        int i = 0;
-        for (int angle = (int) -fov / 2; angle < fov / 2; angle++, i++) {
+        for (int i = 0, angle = (int) -fov / 2; angle < fov / 2; angle++, i++) {
             rays.get(i).setAngle(toRadians(angle) + heading);
         }
     }
@@ -56,7 +59,35 @@ public class Camera {
     }
 
     public void renderView(List<Wall> walls) {
+        for (Ray ray : rays) {
+            Vector2f closest = null;
 
+            float minDistance = Float.MAX_VALUE;
+
+            for (Wall wall : walls) {
+                Vector2f intersection = ray.cast(wall);
+                if (intersection != null) {
+                    float distance = this.position.distanceSquared(intersection);
+                    if (distance < minDistance) {
+                        closest = intersection;
+                        minDistance = distance;
+                    }
+                }
+
+            }
+
+            if (closest != null) {
+                nvgSave(ctx);
+                nvgBeginPath(ctx);
+                nvgMoveTo(ctx, this.position.x(), this.position.y());
+                nvgLineTo(ctx, closest.x(), closest.y());
+
+                nvgStrokeColor(ctx, new Color(255, 0, 0).nvgColor());
+                nvgStroke(ctx);
+
+                nvgRestore(ctx);
+            }
+        }
     }
 
     public void renderBody() {
@@ -65,10 +96,6 @@ public class Camera {
         body.setY(position.y());
         body.setRotation(heading);
         body.render();
-
-        for (Ray ray : rays) {
-            ray.render(ctx);
-        }
     }
 
     public float getRotation() {
