@@ -1,23 +1,35 @@
 package aght.raycasting;
 
+import aght.graphics.Color;
+import aght.graphics.shape.Line;
 import org.joml.Vector2f;
 
+import static org.lwjgl.nanovg.NanoVG.*;
+
 public class Ray {
-    Vector2f position;
-    Vector2f direction;
+    private Vector2f position;
+    private Vector2f direction;
 
     public Ray(Vector2f position, float angle) {
         this.position = position;
+        this.direction = new Vector2f();
         setAngle(angle);
     }
 
-    public void pointAt(float x, float y) {
-        this.direction.set(x, y);
-        this.direction.normalize();
-    }
+    // Debugging only
+    public void render(long ctx) {
+        nvgSave(ctx);
+        nvgBeginPath(ctx);
 
-    public void setAngle(float angle) {
-        this.direction = new Vector2f((float) Math.cos(angle), (float) Math.sin(angle));
+        nvgTranslate(ctx, position.x(), position.y());
+
+        nvgMoveTo(ctx, 0, 0);
+        nvgLineTo(ctx,direction.x() * 10000, direction.y() * 10000);
+
+        nvgStrokeColor(ctx, new Color(255, 255, 255).nvgColor());
+        nvgStroke(ctx);
+
+        nvgRestore(ctx);
     }
 
     /**
@@ -49,5 +61,15 @@ public class Ray {
         }
 
         return null;
+    }
+
+    public void setAngle(float angle) {
+        this.direction.set((float) Math.cos(angle), (float) Math.sin(angle));
+        this.direction.normalize();
+    }
+
+    public void pointAt(float x, float y) {
+        this.direction.set(x, y);
+        this.direction.normalize();
     }
 }
