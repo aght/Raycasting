@@ -1,10 +1,14 @@
 package aght;
 
 import aght.raycasting.Camera;
+import aght.raycasting.Wall;
 import aght.window.Context;
 import aght.window.input.keyboard.Keyboard;
 
 import java.security.Key;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -17,10 +21,22 @@ public class Main extends Context {
 
     private Camera camera;
 
+    private List<Wall> walls;
+
     public Main() {
         super(1000, 600, "Raycasting", 8);
         width = getWidth();
         height = getHeight();
+    }
+
+    private List<Wall> generateWalls() {
+        List<Wall> walls = new ArrayList<>();
+
+        for (int i = 0; i < 20; i++) {
+
+        }
+
+        return walls;
     }
 
     @Override
@@ -28,6 +44,7 @@ public class Main extends Context {
         ctx = getNvgctx();
 
         camera = new Camera(ctx, width / 2, height / 2, 90);
+        walls = new ArrayList<Wall>();
     }
 
     @Override
@@ -51,7 +68,11 @@ public class Main extends Context {
 
     @Override
     public void render() {
-        camera.render();
+        camera.renderBody();
+
+        for (Wall wall : walls) {
+            wall.render();
+        }
     }
 
     public static void main(String[] args) {

@@ -3,6 +3,9 @@ package aght.utils;
 import org.lwjgl.nanovg.NVGColor;
 
 public class NVGUtils {
+
+    private NVGUtils() {}
+
     public static NVGColor rgba(int r, int g, int b, int a) {
         NVGColor color = NVGColor.create();
 

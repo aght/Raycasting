@@ -1,7 +1,6 @@
 package aght.raycasting;
 
 import aght.graphics.Color;
-import aght.graphics.shape.Line;
 import org.joml.Vector2f;
 
 import static org.lwjgl.nanovg.NanoVG.*;
