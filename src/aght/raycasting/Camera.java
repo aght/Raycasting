@@ -1,6 +1,7 @@
 package aght.raycasting;
 
 import aght.graphics.Color;
+import aght.graphics.shape.Circle;
 import aght.graphics.shape.Line;
 import aght.graphics.shape.Rectangle;
 import aght.utils.MathUtils;
@@ -67,13 +68,13 @@ public class Camera {
             Vector2f minIntersection = null;
             float minDistance = Float.MAX_VALUE;
 
-            for (int k = 0; k < walls.size(); k++) {
-                Vector2f intersection = ray.cast(walls.get(k));
+            for (int j = 0; j < walls.size(); j++) {
+                Vector2f intersection = ray.cast(walls.get(j));
                 if (intersection != null) {
                     float distance = this.position.distance(intersection);
 
                     if (distance < minDistance) {
-                        hitWall = walls.get(k);
+                        hitWall = walls.get(j);
                         minIntersection = intersection;
                         minDistance = distance;
                     }
@@ -108,9 +109,15 @@ public class Camera {
         renderMapBackground();
         renderMapWalls(walls);
 
-        for (RaycastResult result : results) {
-            renderMapRay(result.getIntersection());
+        for (int i = 0; i < results.size(); i += 2) {
+            Vector2f intersection = results.get(i).getIntersection();
+
+            if (intersection != null) {
+                renderMapRay(results.get(i).getIntersection());
+            }
         }
+
+        renderPlayer();
     }
 
     private void renderMapRay(Vector2f intersection) {
@@ -120,7 +127,7 @@ public class Camera {
         float y2 = intersection.y() * MAP_SCALE;
 
         Line ray = new Line(ctx, x1, y1, x2, y2);
-        ray.setStrokeColor(new Color(255, 97, 253));
+        ray.setStrokeColor(Color.Red);
         ray.render();
     }
 
@@ -134,6 +141,15 @@ public class Camera {
             Line line = new Line(ctx, x1, y1, x2, y2);
             line.render();
         }
+    }
+
+    private void renderPlayer() {
+        float cx = position.x() * MAP_SCALE;
+        float cy = position.y() * MAP_SCALE;
+        float r = 10 * MAP_SCALE;
+
+        Circle player = new Circle(ctx, cx, cy, r);
+        player.render();
     }
 
     private void renderMapBackground() {
