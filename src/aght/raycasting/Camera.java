@@ -4,13 +4,9 @@ import aght.graphics.Color;
 import aght.graphics.shape.Rectangle;
 import aght.utils.MathUtils;
 import org.joml.Vector2f;
-import org.lwjgl.system.MathUtil;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.lwjgl.nanovg.NanoVG.*;
-
 
 public class Camera {
     private static final int RAY_COUNT = 200;
@@ -96,12 +92,15 @@ public class Camera {
             float alpha = 150 / correctedDistance;
             int mappedAlpha = (int) MathUtils.map(alpha, 0, 1, 0, 255);
 
-            Color wallColor = wall.getColor();
-            wallColor.a(mappedAlpha);
+            Color wallColor = null;
+            if (wall != null) {
+                wallColor = wall.getColor();
+                wallColor.a(mappedAlpha);
+            }
 
             Rectangle section = new Rectangle(ctx, j * stripWidth, height / 2, stripWidth, stripHeight);
             section.setOrigin(section.getX() + section.getWidth() / 2, section.getY() + section.getHeight() / 2);
-            section.setFillColor(wallColor);
+            section.setFillColor(wall == null ? Color.Black : wallColor);
             section.render();
 
             j++;

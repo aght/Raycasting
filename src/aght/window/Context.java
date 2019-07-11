@@ -91,7 +91,7 @@ public abstract class Context {
 
         glfwMakeContextCurrent(window);
         GL.createCapabilities();
-        glfwSwapInterval(0);
+        glfwSwapInterval(1);
 
         nvgctx = nvgCreate(0);
 

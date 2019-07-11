@@ -3,7 +3,6 @@ package aght;
 import aght.graphics.Color;
 import aght.raycasting.Camera;
 import aght.raycasting.Wall;
-import aght.utils.RandomUtils;
 import aght.window.Context;
 import aght.window.input.keyboard.Keyboard;
 
