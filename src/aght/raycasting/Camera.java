@@ -11,18 +11,24 @@ import java.util.List;
 
 public class Camera {
     private static final int RAY_COUNT = 300;
+    private static final int LUMINANCE_RATIO = 170;
+    private static final int RENDER_HEIGHT_RATIO = 48;
 
     private long ctx;
 
     private Vector2f position;
 
     private float fov;
+    private float screenWidth;
+    private float screenHeight;
     private float heading;
 
-    public Camera(long ctx, float x, float y, float fov) {
+    public Camera(long ctx, float x, float y, float fov, float screenWidth, float screenHeight) {
+        this.ctx = ctx;
         this.position = new Vector2f(x, y);
         this.fov = MathUtils.toRadians(fov);
-        this.ctx = ctx;
+        this.screenWidth = screenWidth;
+        this.screenHeight = screenHeight;
         this.heading = 0;
     }
 
@@ -47,7 +53,7 @@ public class Camera {
         this.position.add(new Vector2f(nX, nY).normalize().mul(stepAmount));
     }
 
-    public void renderView(List<Wall> walls, float width, float height) {
+    public void renderView(List<Wall> walls) {
         List<Ray> rays = generateRays();
 
         for (int i = 0; i < RAY_COUNT; i++) {
@@ -70,18 +76,18 @@ public class Camera {
             }
 
             float correctedDistance = minDistance * (float) Math.cos(ray.getAngle() - this.heading);
-            float projectionPlane = (width / 2) / (float) Math.tan(this.fov / 2);
-            float stripWidth = width / RAY_COUNT;
-            float stripHeight = (32 / correctedDistance) * projectionPlane;
+            float projectionPlane = (screenWidth / 2) / (float) Math.tan(this.fov / 2);
+            float stripWidth = screenWidth / RAY_COUNT;
+            float stripHeight = (RENDER_HEIGHT_RATIO / correctedDistance) * projectionPlane;
 
-            float alpha = 150 / correctedDistance;
+            float alpha = LUMINANCE_RATIO / correctedDistance;
             int mappedAlpha = (int) MathUtils.map(alpha, 0, 1, 0, 255);
 
             if (hitWall != null) {
                 Color wallColor = hitWall.getColor();
                 wallColor.a(mappedAlpha);
 
-                Rectangle section = new Rectangle(ctx, i * stripWidth, height / 2, stripWidth, stripHeight);
+                Rectangle section = new Rectangle(ctx, i * stripWidth, screenHeight / 2, stripWidth, stripHeight);
                 section.setOrigin(section.getX() + section.getWidth() / 2, section.getY() + section.getHeight() / 2);
                 section.setFillColor(wallColor);
                 section.render();

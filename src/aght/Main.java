@@ -48,7 +48,7 @@ public class Main extends Context {
     public void setup() {
         ctx = getNvgctx();
 
-        camera = new Camera(ctx, width / 2, height / 2, 70);
+        camera = new Camera(ctx, width / 2, height / 2, 70, width, height);
         walls = generateWalls();
     }
 
@@ -73,7 +73,7 @@ public class Main extends Context {
 
     @Override
     public void render() {
-        camera.renderView(walls, width, height);
+        camera.renderView(walls);
     }
 
     public static void main(String[] args) {
