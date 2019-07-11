@@ -88,7 +88,7 @@ public class Camera {
                 wallColor.a(mappedAlpha);
 
                 Rectangle section = new Rectangle(ctx, i * stripWidth, screenHeight / 2, stripWidth, stripHeight);
-                section.setOrigin(section.getX() + section.getWidth() / 2, section.getY() + section.getHeight() / 2);
+                section.setOriginY(section.getY() + section.getHeight() / 2);
                 section.setFillColor(wallColor);
                 section.render();
             }
