@@ -22,10 +22,10 @@ public class Ray {
         float x2 = wall.getEndX();
         float y2 = wall.getEndY();
 
-        float x3 = this.position.x();
-        float y3 = this.position.y();
-        float x4 = this.position.x() + this.direction.x();
-        float y4 = this.position.y() + this.direction.y();
+        float x3 = position.x();
+        float y3 = position.y();
+        float x4 = position.x() + direction.x();
+        float y4 = position.y() + direction.y();
 
         if ((x1 == x2 && y1 == y2) || (x3 == x4 && y3 == y4)) {
             return null;
@@ -48,11 +48,11 @@ public class Ray {
     }
 
     public void setAngle(float angle) {
-        this.direction.set((float) Math.cos(angle), (float) Math.sin(angle));
-        this.direction.normalize();
+        direction.set((float) Math.cos(angle), (float) Math.sin(angle));
+        direction.normalize();
     }
 
     public float getAngle() {
-        return (float) Math.atan2(this.direction.y, this.direction.x);
+        return (float) Math.atan2(direction.y, direction.x);
     }
 }

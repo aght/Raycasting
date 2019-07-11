@@ -38,11 +38,11 @@ public class Camera {
     private List<Ray> generateRays() {
         List<Ray> rays = new ArrayList<>();
 
-        float rayAngle = this.heading - (this.fov / 2);
-        float angleStep = this.fov / RAY_COUNT;
+        float rayAngle = heading - (fov / 2);
+        float angleStep = fov / RAY_COUNT;
 
         for (int i = 0; i < RAY_COUNT; i++) {
-            rays.add(new Ray(this.position, rayAngle));
+            rays.add(new Ray(position, rayAngle));
             rayAngle += angleStep;
         }
 
@@ -50,10 +50,10 @@ public class Camera {
     }
 
     public void move(float stepAmount) {
-        float nX = (float) Math.cos(this.heading);
-        float nY = (float) Math.sin(this.heading);
+        float nX = (float) Math.cos(heading);
+        float nY = (float) Math.sin(heading);
 
-        this.position.add(new Vector2f(nX, nY).normalize().mul(stepAmount));
+        position.add(new Vector2f(nX, nY).normalize().mul(stepAmount));
     }
 
     public void renderScene(List<Wall> walls) {
@@ -71,7 +71,7 @@ public class Camera {
             for (int j = 0; j < walls.size(); j++) {
                 Vector2f intersection = ray.cast(walls.get(j));
                 if (intersection != null) {
-                    float distance = this.position.distance(intersection);
+                    float distance = position.distance(intersection);
 
                     if (distance < minDistance) {
                         hitWall = walls.get(j);
@@ -81,8 +81,8 @@ public class Camera {
                 }
             }
 
-            float correctedDistance = minDistance * (float) Math.cos(ray.getAngle() - this.heading);
-            float projectionPlane = (screenWidth / 2) / (float) Math.tan(this.fov / 2);
+            float correctedDistance = minDistance * (float) Math.cos(ray.getAngle() - heading);
+            float projectionPlane = (screenWidth / 2) / (float) Math.tan(fov / 2);
             float stripWidth = screenWidth / RAY_COUNT;
             float stripHeight = (RENDER_HEIGHT_RATIO / correctedDistance) * projectionPlane;
 
@@ -153,13 +153,18 @@ public class Camera {
     }
 
     private void renderMapBackground() {
-        Rectangle background = new Rectangle(ctx,0, 0, screenWidth * MAP_SCALE, screenHeight * MAP_SCALE);
+        float x = 0;
+        float y = 0;
+        float width = screenWidth * MAP_SCALE;
+        float height = screenHeight * MAP_SCALE;
+
+        Rectangle background = new Rectangle(ctx, x, y, width, height);
         background.setFillColor(Color.Black);
         background.render();
     }
 
     public float getRotation() {
-        return this.heading;
+        return heading;
     }
 
     public void setRotation(float angle) {
