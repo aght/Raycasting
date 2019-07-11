@@ -13,20 +13,15 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Main extends Context {
 
-    private long ctx;
+    private static final int width = 768;
+    private static final int height = 480;
+    private static final int msaa = 2;
 
-    private int width;
-    private int height;
+    private long ctx;
 
     private Camera camera;
 
     private List<Wall> walls;
-
-    public Main() {
-        super(1000, 768, "Raycasting", 2);
-        width = getWidth();
-        height = getHeight();
-    }
 
     private List<Wall> generateWalls() {
         List<Wall> walls = new ArrayList<>();
@@ -82,6 +77,6 @@ public class Main extends Context {
     }
 
     public static void main(String[] args) {
-        new Main().run();
+        new Main().run(width, height, "Raycasting", msaa);
     }
 }

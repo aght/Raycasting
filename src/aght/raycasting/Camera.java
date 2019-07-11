@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Camera {
-    private static final int RAY_COUNT = 200;
+    private static final int RAY_COUNT = 300;
 
     private long ctx;
 
@@ -20,16 +20,12 @@ public class Camera {
 
     private List<Ray> rays;
 
-    private Rectangle body;
-
     public Camera(long ctx, float x, float y, float fov) {
         this.position = new Vector2f(x, y);
         this.fov = fov;
         this.ctx = ctx;
         this.rays = generateRays();
         this.heading = 0;
-
-        body = new Rectangle(ctx, 0, 0, 10, 10);
     }
 
     private List<Ray> generateRays() {

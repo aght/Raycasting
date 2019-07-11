@@ -39,14 +39,12 @@ public abstract class Context {
 
     private String title;
 
-    protected Context(int width, int height, String title, int msaa) {
+    public void run(int width, int height, String title, int msaa) {
         this.width = width;
         this.height = height;
         this.title = title;
         this.msaa = msaa;
-    }
 
-    public void run() {
         init();
         setup();
         loop();
