@@ -3,6 +3,7 @@ package aght.raycasting;
 import aght.graphics.Color;
 import aght.graphics.shape.Rectangle;
 import aght.utils.MathUtils;
+import org.joml.Math;
 import org.joml.Vector2f;
 
 import java.util.ArrayList;
@@ -18,96 +19,81 @@ public class Camera {
     private float fov;
     private float heading;
 
-    private List<Ray> rays;
-
     public Camera(long ctx, float x, float y, float fov) {
         this.position = new Vector2f(x, y);
-        this.fov = fov;
+        this.fov = MathUtils.toRadians(fov);
         this.ctx = ctx;
-        this.rays = generateRays();
         this.heading = 0;
     }
 
     private List<Ray> generateRays() {
         List<Ray> rays = new ArrayList<>();
 
-        float rayAngle = this.heading - (toRadians(fov) / 2);
+        float rayAngle = this.heading - (this.fov / 2);
+        float angleStep = this.fov / RAY_COUNT;
 
         for (int i = 0; i < RAY_COUNT; i++) {
             rays.add(new Ray(this.position, rayAngle));
-            rayAngle += toRadians(fov) / RAY_COUNT;
+            rayAngle += angleStep;
         }
 
         return rays;
     }
 
-    private void updateRays() {
-        float rayAngle = this.heading - (toRadians(fov) / 2);
+    public void move(float stepAmount) {
+        float nX = (float) Math.cos(this.heading);
+        float nY = (float) Math.sin(this.heading);
 
-        for (int i = 0; i < RAY_COUNT; i++) {
-            rays.get(i).setAngle(rayAngle);
-            rayAngle += toRadians(fov) / RAY_COUNT;
-        }
-    }
-
-    public void setRotation(float angle) {
-        this.heading = angle;
-        updateRays();
-    }
-
-    public void move(float step) {
-        position.add(new Vector2f((float) Math.cos(heading), (float) Math.sin(heading))
-                .normalize()
-                .mul(step));
+        this.position.add(new Vector2f(nX, nY).normalize().mul(stepAmount));
     }
 
     public void renderView(List<Wall> walls, float width, float height) {
-        int j = 0;
-        for (Ray ray : rays) {
-            Wall wall = null;
+        List<Ray> rays = generateRays();
+
+        for (int i = 0; i < RAY_COUNT; i++) {
+            Ray ray = rays.get(i);
+
+            Wall hitWall = null;
 
             float minDistance = Float.MAX_VALUE;
 
-            for (int i = 0; i < walls.size(); i++) {
-                Vector2f intersection = ray.cast(walls.get(i));
+            for (int k = 0; k < walls.size(); k++) {
+                Vector2f intersection = ray.cast(walls.get(k));
                 if (intersection != null) {
                     float distance = this.position.distance(intersection);
 
                     if (distance < minDistance) {
                         minDistance = distance;
-                        wall = walls.get(i);
+                        hitWall = walls.get(k);
                     }
                 }
             }
 
-            float correctedDistance = minDistance * (float) Math.cos(ray.getAngle() - heading);
-            float projectionPlane = (width / 2) / (float) Math.tan(toRadians(fov) / 2);
+            float correctedDistance = minDistance * (float) Math.cos(ray.getAngle() - this.heading);
+            float projectionPlane = (width / 2) / (float) Math.tan(this.fov / 2);
             float stripWidth = width / RAY_COUNT;
             float stripHeight = (32 / correctedDistance) * projectionPlane;
 
             float alpha = 150 / correctedDistance;
             int mappedAlpha = (int) MathUtils.map(alpha, 0, 1, 0, 255);
 
-            Color wallColor = null;
-            if (wall != null) {
-                wallColor = wall.getColor();
+            if (hitWall != null) {
+                Color wallColor = hitWall.getColor();
                 wallColor.a(mappedAlpha);
+
+                Rectangle section = new Rectangle(ctx, i * stripWidth, height / 2, stripWidth, stripHeight);
+                section.setOrigin(section.getX() + section.getWidth() / 2, section.getY() + section.getHeight() / 2);
+                section.setFillColor(wallColor);
+                section.render();
             }
-
-            Rectangle section = new Rectangle(ctx, j * stripWidth, height / 2, stripWidth, stripHeight);
-            section.setOrigin(section.getX() + section.getWidth() / 2, section.getY() + section.getHeight() / 2);
-            section.setFillColor(wall == null ? Color.Black : wallColor);
-            section.render();
-
-            j++;
         }
     }
 
     public float getRotation() {
-        return heading;
+        return this.heading;
     }
 
-    private float toRadians(float angle) {
-        return angle * ((float) Math.PI / 180);
+    public void setRotation(float angle) {
+        this.heading = angle;
     }
 }

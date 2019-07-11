@@ -48,7 +48,7 @@ public class Main extends Context {
     public void setup() {
         ctx = getNvgctx();
 
-        camera = new Camera(ctx, width / 2, height / 2, 60);
+        camera = new Camera(ctx, width / 2, height / 2, 70);
         walls = generateWalls();
     }
 

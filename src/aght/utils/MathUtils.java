@@ -6,4 +6,8 @@ public class MathUtils {
         return (((val - inLowerBound) * (outUpperBound - outLowerBound))
                 / ((inUpperBound - inLowerBound))) + outLowerBound;
     }
+
+    public static float toRadians(float angle) {
+        return angle * ((float) Math.PI / 180);
+    }
 }
