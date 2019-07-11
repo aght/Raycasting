@@ -73,7 +73,7 @@ public class Main extends Context {
 
     @Override
     public void render() {
-        camera.renderView(walls);
+        camera.renderScene(walls);
     }
 
     public static void main(String[] args) {

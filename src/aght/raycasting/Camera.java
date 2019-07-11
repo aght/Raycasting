@@ -1,6 +1,7 @@
 package aght.raycasting;
 
 import aght.graphics.Color;
+import aght.graphics.shape.Line;
 import aght.graphics.shape.Rectangle;
 import aght.utils.MathUtils;
 import org.joml.Math;
@@ -10,9 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Camera {
-    private static final int RAY_COUNT = 300;
+    private static final int RAY_COUNT = 200;
     private static final int LUMINANCE_RATIO = 170;
     private static final int RENDER_HEIGHT_RATIO = 48;
+    private static final float MAP_SCALE = 0.2f;
 
     private long ctx;
 
@@ -53,14 +55,16 @@ public class Camera {
         this.position.add(new Vector2f(nX, nY).normalize().mul(stepAmount));
     }
 
-    public void renderView(List<Wall> walls) {
+    public void renderScene(List<Wall> walls) {
+        List<RaycastResult> results = new ArrayList<>();
+
         List<Ray> rays = generateRays();
 
         for (int i = 0; i < RAY_COUNT; i++) {
             Ray ray = rays.get(i);
 
             Wall hitWall = null;
-
+            Vector2f minIntersection = null;
             float minDistance = Float.MAX_VALUE;
 
             for (int k = 0; k < walls.size(); k++) {
@@ -69,8 +73,9 @@ public class Camera {
                     float distance = this.position.distance(intersection);
 
                     if (distance < minDistance) {
-                        minDistance = distance;
                         hitWall = walls.get(k);
+                        minIntersection = intersection;
+                        minDistance = distance;
                     }
                 }
             }
@@ -92,7 +97,49 @@ public class Camera {
                 section.setFillColor(wallColor);
                 section.render();
             }
+
+            results.add(new RaycastResult(minIntersection, hitWall, minDistance));
         }
+
+        renderMap(results, walls);
+    }
+
+    private void renderMap(List<RaycastResult> results, List<Wall> walls) {
+        renderMapBackground();
+        renderMapWalls(walls);
+
+        for (RaycastResult result : results) {
+            renderMapRay(result.getIntersection());
+        }
+    }
+
+    private void renderMapRay(Vector2f intersection) {
+        float x1 = position.x() * MAP_SCALE;
+        float y1 = position.y() * MAP_SCALE;
+        float x2 = intersection.x() * MAP_SCALE;
+        float y2 = intersection.y() * MAP_SCALE;
+
+        Line ray = new Line(ctx, x1, y1, x2, y2);
+        ray.setStrokeColor(new Color(255, 97, 253));
+        ray.render();
+    }
+
+    private void renderMapWalls(List<Wall> walls) {
+        for (Wall wall : walls) {
+            float x1 = wall.getStartX() * MAP_SCALE;
+            float y1 = wall.getStartY() * MAP_SCALE;
+            float x2 = wall.getEndX() * MAP_SCALE;
+            float y2 = wall.getEndY() * MAP_SCALE;
+
+            Line line = new Line(ctx, x1, y1, x2, y2);
+            line.render();
+        }
+    }
+
+    private void renderMapBackground() {
+        Rectangle background = new Rectangle(ctx,0, 0, screenWidth * MAP_SCALE, screenHeight * MAP_SCALE);
+        background.setFillColor(Color.Black);
+        background.render();
     }
 
     public float getRotation() {
@@ -101,5 +148,29 @@ public class Camera {
 
     public void setRotation(float angle) {
         this.heading = angle;
+    }
+
+    private class RaycastResult {
+        private Vector2f intersection;
+        private Wall hitWall;
+        private float distance;
+
+        public RaycastResult(Vector2f intersection, Wall hitWall, float distance) {
+            this.intersection = intersection;
+            this.hitWall = hitWall;
+            this.distance = distance;
+        }
+
+        public Vector2f getIntersection() {
+            return intersection;
+        }
+
+        public Wall getHitWall() {
+            return hitWall;
+        }
+
+        public float getDistance() {
+            return distance;
+        }
     }
 }
