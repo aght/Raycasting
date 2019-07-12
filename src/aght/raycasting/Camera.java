@@ -109,7 +109,7 @@ public class Camera {
         renderMapBackground();
         renderMapWalls(walls);
 
-        for (int i = 0; i < results.size(); i += 2) {
+        for (int i = 0; i < results.size(); i++) {
             Vector2f intersection = results.get(i).getIntersection();
 
             if (intersection != null) {
@@ -121,13 +121,16 @@ public class Camera {
     }
 
     private void renderMapRay(Vector2f intersection) {
+        Color c = Color.Red;
+        c.a(90);
+
         float x1 = position.x() * MAP_SCALE;
         float y1 = position.y() * MAP_SCALE;
         float x2 = intersection.x() * MAP_SCALE;
         float y2 = intersection.y() * MAP_SCALE;
 
         Line ray = new Line(ctx, x1, y1, x2, y2);
-        ray.setStrokeColor(Color.Red);
+        ray.setStrokeColor(c);
         ray.render();
     }
 

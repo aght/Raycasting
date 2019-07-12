@@ -1,6 +1,7 @@
 package aght;
 
 import aght.graphics.Color;
+import aght.raycasting.Box;
 import aght.raycasting.Camera;
 import aght.raycasting.Wall;
 import aght.window.Context;
@@ -22,27 +23,6 @@ public class Main extends Context {
     private Camera camera;
 
     private List<Wall> walls;
-
-    private List<Wall> generateWalls() {
-        List<Wall> walls = new ArrayList<>();
-
-        walls.add(new Wall(ctx, 0, 0, width, 0, Color.White));
-        walls.add(new Wall(ctx, 0, 0, 0, height, Color.White));
-        walls.add(new Wall(ctx, 0, height, width, height, Color.White));
-        walls.add(new Wall(ctx, width, height, width, 0, Color.White));
-
-        float x = 60;
-        float y = 60;
-        float w = 100;
-        float h = 100;
-
-        walls.add(new Wall(ctx, x, y, x + w, y, Color.Red));
-        walls.add(new Wall(ctx, x + w, y, x + w, y + h, Color.Aqua));
-        walls.add(new Wall(ctx, x + w, y + h, x, y + h, Color.Fuchsia));
-        walls.add(new Wall(ctx, x, y + h, x, y, Color.Lime));
-
-        return walls;
-    }
 
     @Override
     public void setup() {
@@ -74,6 +54,35 @@ public class Main extends Context {
     @Override
     public void render() {
         camera.renderScene(walls);
+    }
+
+    private List<Wall> generateWalls() {
+        List<Wall> walls = new ArrayList<>();
+
+        Box bounds = new Box(ctx, 0, 0, width, height);
+        walls.addAll(bounds.getWalls());
+
+        Box b1 = new Box(ctx, 30, 30, width / 5, 100, Color.Red);
+        walls.addAll(b1.getWalls());
+
+        Box b2 = new Box(ctx, 200, height / 2, 30, 30, Color.Lime);
+        walls.addAll(b2.getWalls());
+
+        float boxWidth = 50;
+        float spacing = 50;
+        int max = width / (int) (boxWidth + spacing);
+
+        for (int i = 0; i < max; i++) {
+            float x = i * (boxWidth + spacing);
+            float y = height - spacing * 2 - boxWidth;
+            float w = boxWidth;
+            float h = boxWidth;
+
+            Box b = new Box(ctx, x, y, w, h, Color.Yellow);
+            walls.addAll(b.getWalls());
+        }
+
+        return walls;
     }
 
     public static void main(String[] args) {
