@@ -7,6 +7,7 @@ import aght.raycasting.Wall;
 import aght.window.Context;
 import aght.window.input.keyboard.Keyboard;
 
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,19 +35,19 @@ public class Main extends Context {
 
     @Override
     public void update() {
-        if (Keyboard.isKeyDown(GLFW_KEY_RIGHT)) {
+        if (Keyboard.isKeyDown(GLFW_KEY_RIGHT) || Keyboard.isKeyDown(GLFW_KEY_D)) {
             camera.setRotation(camera.getRotation() + 0.05f);
         }
 
-        if (Keyboard.isKeyDown(GLFW_KEY_LEFT)) {
+        if (Keyboard.isKeyDown(GLFW_KEY_LEFT) || Keyboard.isKeyDown(GLFW_KEY_A)) {
             camera.setRotation(camera.getRotation() - 0.05f);
         }
 
-        if (Keyboard.isKeyDown(GLFW_KEY_UP)) {
+        if (Keyboard.isKeyDown(GLFW_KEY_UP) || Keyboard.isKeyDown(GLFW_KEY_W)) {
             camera.move(2f);
         }
 
-        if (Keyboard.isKeyDown(GLFW_KEY_DOWN)) {
+        if (Keyboard.isKeyDown(GLFW_KEY_DOWN) || Keyboard.isKeyDown(GLFW_KEY_S)) {
             camera.move(-2f);
         }
     }
